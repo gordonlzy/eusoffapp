@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const cookieParser = require('cookie-parser');
+const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -20,17 +21,9 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useCreateIndex: true })
     .catch((err) => console.log(err));
 
 // routes
+app.get('*', checkUser);
 app.get('/', (req, res) => res.render('home'));
+app.get('/meal', requireAuth, (req, res) => res.render('meal'));
+app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
+app.get('/favours', requireAuth, (req, res) => res.render('favours'));
 app.use(authRoutes);
-
-// cookies
-app.get('/set-cookies', (req, res) => {
-    res.cookie("newUser", false);
-    res.send("You got the cookies");
-})
-
-app.get('/read  -cookies', (req, res) => {
-    const cookies = res.cookies;
-    console.log(cookies);
-    res.json(cookies);
-})
