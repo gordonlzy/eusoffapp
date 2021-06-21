@@ -4,9 +4,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Log in</title>
 </head>
 <body>
-    <h1>Login</h1>
+    <form>
+        <h2>Log in</h2>
+        <label for="email">Email</label>
+        <input type="text" name="email" required />
+        <div class="email error"></div>
+        <label for="password">Password</label>
+        <input type="password" name="password" required />
+        <div class="password error"></div>
+        <button>Log in</button>
+    </form>
+
+    <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // get the values
+            const email = form.email.value;
+            const password = form.password.value;
+
+            console.log(email, password);
+        })
+    </script>
 </body>
 </html>
