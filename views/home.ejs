@@ -1,12 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
-<body>
-    <h1>Home</h1>
-</body>
-</html>
+<%- include('partials/header'); -%>
+
+<header>
+    <div class="flex-gap">
+      <div>
+          <h4>Meal Bot</h4>
+          <a href="/meal" class="btn">Check Menu</a>
+      </div>
+      <div>
+          <h4>Laundry Bot</h4>
+          <a href="/laundry" class="btn">Check Laundry</a>
+      </div>
+      <div>
+          <h4>Eusoff Favours</h4>
+          <a href="/favours" class="btn">Check Favours</a>
+      </div>
+    </div>
+</header>
+
+
+<%- include('partials/footer'); -%>
