@@ -2,6 +2,12 @@
 
 <form>
     <h2>Sign up</h2>
+    <label for="name">Name</label>
+    <input type="text" name="name" required />
+    <div class="name error"></div>
+    <label for="room">Room</label>
+    <input type="text" name="room" required />
+    <div class="room error"></div>
     <label for="email">Email</label>
     <input type="text" name="email" required />
     <div class="email error"></div>
@@ -16,6 +22,8 @@
 
 <script>
     const form = document.querySelector('form');
+    const nameError = document.querySelector('.name.error');
+    const roomError = document.querySelector('.room.error');
     const emailError = document.querySelector('.email.error');
     const passwordError = document.querySelector('.password.error');
 
@@ -23,21 +31,27 @@
         e.preventDefault();
 
         // reset errors
+        nameError.textContent = "";
+        roomError.textContent = "";
         emailError.textContent = "";
         passwordError.textContent = "";
 
         // get the values
+        const name = form.name.value;
+        const room = form.room.value;
         const email = form.email.value;
         const password = form.password.value;
 
         try {
             const res = await fetch('/signup', {
                 method: 'POST',
-                body:  JSON.stringify({ email, password }),
+                body:  JSON.stringify({ name, room, email, password }),
                 headers: { "Content-Type": "application/json" }
             })
             const data = await res.json();
             if (data.errors) {
+                nameError.textContent = data.errors.name;
+                roomError.textContent = data.errors.room;
                 emailError.textContent = data.errors.email;
                 passwordError.textContent = data.errors.password;
             }
