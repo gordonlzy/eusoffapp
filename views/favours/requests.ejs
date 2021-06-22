@@ -12,13 +12,11 @@
             <h3 class="category"><%= request.category %></h3>
             <p class="remark"><%= request.remark %></p>
           </a>
-          <a href="create" class="btn">Make one now</a>
         <% }) %>
       <% } else { %>
         <p>There are no active requests to display...</p>
-        <a href="create" class="btn">Make one now</a>
       <% } %>
-      
+      <a href="create" class="btn">Make one now</a>
     </div>
 
   <%- include('../partials/request-footer'); -%>
