@@ -16,7 +16,7 @@ module.exports.request_create_post = (req, res) => {
     const request = new Request(req.body);
     request.save()
         .then(result => {
-            res.redirect("/requests");
+            res.redirect("/favours/requests");
         })
         .catch(err => console.log(err));
 }
