@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
+const requestRoutes = require('./routes/requestRoutes');
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 
@@ -8,6 +9,7 @@ const app = express();
 
 // middleware
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -27,3 +29,11 @@ app.get('/meal', requireAuth, (req, res) => res.render('meal'));
 app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
 app.get('/favours', requireAuth, (req, res) => res.render('favours'));
 app.use(authRoutes);
+
+// requests routes
+app.use('/favours', requestRoutes);
+
+// 404 page
+app.use((req, res) => {
+    res.status(404).render("404", { title: "404" });
+})
