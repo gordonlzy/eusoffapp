@@ -14,6 +14,7 @@
     <label for="remark">Request remark:</label>
     <textarea id="remark" name="remark"></textarea>
     <div class="remark error"></div>
+    <input type="hidden" name="owner" value=`<%= user._id %>` />
     <button>Submit</button>
   </form>
 
@@ -40,14 +41,14 @@
       const category = form.category.value;
       const credit = form.credit.value;
       const remark = form.remark.value;
-      console.log(category, credit, remark);
+      const owner = user.name;
+      console.log(category, credit, remark, owner);
       try {
           const res = await fetch('/favours/requests', {
               method: 'POST',
-              body:  JSON.stringify({ category, credit, remark }),
+              body:  JSON.stringify({ category, credit, remark, owner }),
               headers: { "Content-Type": "application/json" }
           })
-          console.log("res is", res);
           const data = await res.json();
           if (data.errors) {
               categoryError.textContent = data.errors.category;
