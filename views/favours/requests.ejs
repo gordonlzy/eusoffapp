@@ -1,0 +1,26 @@
+<html lang="en">
+  <%- include('../partials/request-header'); -%>
+  <body>
+    <%- include("../partials/request-nav.ejs") -%>
+    
+    <div class="requests content">
+      <h2>All Requests</h2>
+  
+      <% if (requests.length > 0) { %>
+        <% requests.forEach(request => { %>
+          <a class="single" href="/requests/<%= request._id %>">
+            <h3 class="category"><%= request.category %></h3>
+            <p class="remark"><%= request.remark %></p>
+          </a>
+          <a href="create" class="btn">Make one now</a>
+        <% }) %>
+      <% } else { %>
+        <p>There are no active requests to display...</p>
+        <a href="create" class="btn">Make one now</a>
+      <% } %>
+      
+    </div>
+
+  <%- include('../partials/request-footer'); -%>
+  </body>
+</html>
