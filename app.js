@@ -28,6 +28,7 @@ app.get('/', (req, res) => res.render('home'));
 app.get('/meal', requireAuth, (req, res) => res.render('meal'));
 app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
 app.get('/favours', requireAuth, (req, res) => res.render('favours'));
+app.get('/profile', requireAuth, (req, res) => res.render('profile'));
 app.use(authRoutes);
 
 // requests routes
