@@ -1,6 +1,5 @@
 const Request = require('../models/Request');
 const User = require('../models/User');
-const mongoose = require('mongoose');
 
 module.exports.request_index = (req, res) => {
     Request.find().sort({ createdAt: -1 })
