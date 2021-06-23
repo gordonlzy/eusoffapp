@@ -1,9 +1,21 @@
 const Request = require('../models/Request');
+const User = require('../models/User');
+const mongoose = require('mongoose');
 
 module.exports.request_index = (req, res) => {
     Request.find().sort({ createdAt: -1 })
-        .then(result => {
-            res.render('favours/requests', { requests: result, title: "Eusoff Favours" });
+        .then(async (result) => {
+            const requests = result.map(async (request) => {
+                const ownerName = await User.findById(request.owner)
+                    .then(owner => {
+                        return owner.name;
+                    })
+                    .catch(err => console.log(err));
+                request.ownerName = ownerName;
+                return request;
+            });
+            const requestWithOwnerName = await Promise.all(requests);
+            res.render('favours/requests', { requests: requestWithOwnerName, title: "Eusoff Favours" });
         })
         .catch((err) => console.log(err))
 }
@@ -24,6 +36,12 @@ module.exports.request_create_post = (req, res) => {
 module.exports.request_details = (req, res) => {
     const id = req.params.id;
     Request.findById(id)
+        .then(async result => {
+            const owner = await User.findById(result.owner);
+            const resultWithOwner = result;
+            resultWithOwner.ownerName = owner.name;
+            return resultWithOwner;
+        })
         .then(result => {
             res.render('favours/details', { request: result, title: "Request details" });
         })
@@ -34,10 +52,10 @@ module.exports.request_details = (req, res) => {
 }
 
 module.exports.request_delete = (req, res) => {
-    const id = req.param.id;
+    const id = req.params.id;
     Request.findByIdAndDelete(id)
         .then(result => {
-            res.json({ redirect: "favours/requests" });
+            res.json({ redirect: "/favours/requests" });
         })
         .catch(err => console.log(err));
 }
