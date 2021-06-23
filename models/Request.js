@@ -11,7 +11,7 @@ const requestSchema = new mongoose.Schema({
         required: [true, "Please enter the number of credits"]
     },
     owner: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
     },
     takenBy: {
         type: String,
