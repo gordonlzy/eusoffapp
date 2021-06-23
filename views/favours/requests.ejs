@@ -8,9 +8,9 @@
   
       <% if (requests.length > 0) { %>
         <% requests.forEach(request => { %>
-          <a class="single" href="/requests/<%= request._id %>">
+          <a class="single" href="/favours/<%= request._id %>">
             <h3 class="category"><%= request.category %></h3>
-            <p class="remark"><%= request.remark %></p>
+            <p class="remark"><%= request.remark %> made by <%= request.ownerName %></p>
           </a>
         <% }) %>
       <% } else { %>
