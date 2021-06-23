@@ -1,0 +1,31 @@
+<html lang="en">
+    <%- include("../partials/request-header.ejs") -%>
+    <body>
+        <%- include("../partials/request-nav.ejs") -%>
+        <div class="details content">
+            <h1><%= request.category %></h1>
+        <div class="content">
+            <p><%= request.remark %> made by <%= request.ownerName %> </p>
+        </div>
+        <a class="delete" data-doc="<%= request._id %>">
+        DELETE
+        </a>
+    </div>
+
+    <%- include("../partials/request-footer.ejs") %>
+
+    <script>
+        const trashcan = document.querySelector('a.delete');
+        trashcan.addEventListener('click', (e) => {
+        const endpoint = `/favours/${trashcan.dataset.doc}`;
+        fetch(endpoint, {
+            method: 'DELETE',
+        })
+        .then(response => response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.log(err));
+        });
+        
+    </script>
+    </body>
+</html>
