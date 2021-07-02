@@ -8,15 +8,17 @@
   
       <% if (requests.length > 0) { %>
         <% requests.forEach(request => { %>
+          <br>
           <a class="single" href="/favours/<%= request._id %>">
             <h3 class="category"><%= request.category %></h3>
-            <p class="remark"><%= request.remark %> made by <%= request.ownerName %></p>
+            <p class="remark"><%= request.remark %></p>
+            <p>made by <a href="/profile/<%= request.owner %>" style="text-decoration: underline;"><%= request.ownerName %></a></p>
           </a>
         <% }) %>
       <% } else { %>
         <p>There are no active requests to display...</p>
       <% } %>
-      <a href="create" class="btn">Make one now</a>
+      <a href="create" class="btn" style="padding: 10px; position:relative; top: 50px;">Create</a>
     </div>
 
   <%- include('../partials/request-footer'); -%>
