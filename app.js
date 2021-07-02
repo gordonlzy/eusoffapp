@@ -4,6 +4,7 @@ const authRoutes = require('./routes/authRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
+const User = require('./models/User');
 
 const app = express();
 
@@ -27,12 +28,24 @@ app.get('*', checkUser);
 app.get('/', (req, res) => res.render('home'));
 app.get('/meal', requireAuth, (req, res) => res.render('meal'));
 app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
-app.get('/favours', requireAuth, (req, res) => res.render('favours'));
-app.get('/profile', requireAuth, (req, res) => res.render('profile'));
+app.get("/profile/:id", requireAuth, (req, res) => {
+    const id = req.params.id;
+    console.log(req);
+    User.findById(id)
+        .then(result => {
+            res.render('profile', { viewedUser: result, title: "User profile" });
+        })
+        .catch(err => {
+            console.log(err);
+            res.render("404", { title: "User not found" });
+        })
+});
+
+// auth routes
 app.use(authRoutes);
 
 // requests routes
-app.use('/favours', requestRoutes);
+app.use('/favours', requireAuth, requestRoutes);
 
 // 404 page
 app.use((req, res) => {
