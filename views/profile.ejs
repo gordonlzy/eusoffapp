@@ -1,10 +1,14 @@
 <%- include("partials/header") -%>
-<h2>Welcome back, <%= user.name %></h2>
+<% if (user._id == viewedUser.id) { %>
+    <h2>Welcome back, <%= viewedUser.name %></h2>
+<% } else { %>
+    <h2>You are viewing <%= viewedUser.name %>'s Profile</h2>
+<% } %>
 <br>
 <div class="data">
-    <p>Name: <%= user.name %></p>
-    <p>Room: <%= user.room %></p>
-    <p>Email: <%= user.email %></p>
+    <p>Name: <%= viewedUser.name %></p>
+    <p>Room: <%= viewedUser.room %></p>
+    <p>Email: <%= viewedUser.email %></p>
 </div>
 
 <%- include("partials/footer") -%>
