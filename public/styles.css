@@ -162,7 +162,7 @@ body{
     position:relative; 
     top: 20px;
   }
-  .cancel-btn {
+  .remove-btn {
     border-radius: 36px;
     background: #FEE996;
     padding: 10px; 
