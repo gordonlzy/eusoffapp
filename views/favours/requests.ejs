@@ -18,7 +18,7 @@
             <% if (user.id == request.owner) { %>
               <a class="view-btn" href="/favours/<%= request._id %>">View</a>
             <% } else { %>
-              <a class="take-request-btn" data-doc="<%= request._id %>">Take Request</a>
+              <a class="take-request-btn" data-request="<%= request._id %>" data-user="<%= user._id %>">Take Request</a>
             <% } %>
           <% } %>
         <% }) %>
@@ -36,9 +36,11 @@
 <script>
   const takeRequestBtn = document.querySelector('.take-request-btn');
   takeRequestBtn.addEventListener('click', async (e) => {
-      const endpoint = `/favours/take-request/${takeRequestBtn.dataset.doc}`;
+      const endpoint = `/favours/take-request/${takeRequestBtn.dataset.request}`;
       fetch(endpoint, {
         method: 'POST',
+        body: JSON.stringify({ takenBy: takeRequestBtn.dataset.user }),
+        headers: { 'Content-Type': 'application/json' }
       })
       .then(response => response.json())
       .then(data => window.location.herf = data.redirect)
