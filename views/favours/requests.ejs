@@ -33,9 +33,7 @@
   <%- include('../partials/request-footer'); -%>
   <script>
     function takeRequest(id) {
-      console.log(id);
       const takeRequestBtn = document.getElementById(id);
-      console.log(takeRequestBtn);
       const endpoint = `/favours/take-request/${takeRequestBtn.dataset.request}`;
         fetch(endpoint, {
           method: 'POST',
