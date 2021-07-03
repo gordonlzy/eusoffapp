@@ -133,3 +133,32 @@ body{
     font-size: 0.8em;
     text-align: center;
   }
+  .take-request-btn {
+    border-radius: 36px;
+    background: #FEE996;
+    padding: 10px; 
+    position:relative; 
+    left: 350px; 
+    bottom: 50px;
+  }
+  .view-btn:hover {
+    cursor: pointer;
+  }
+  .view-btn {
+    border-radius: 36px;
+    background: #FEE996;
+    padding: 10px; 
+    position:relative; 
+    left: 350px; 
+    bottom: 50px;
+  }
+  .take-request-btn:hover {
+    cursor: pointer;
+  }
+  .create-btn {
+    border-radius: 36px;
+    background: #FEE996;
+    padding: 10px; 
+    position:relative; 
+    top: 20px;
+  }
