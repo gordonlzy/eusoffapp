@@ -18,7 +18,8 @@
             <% if (user.id == request.owner) { %>
               <a class="view-btn" href="/favours/<%= request._id %>">View</a>
             <% } else { %>
-              <a class="take-request-btn" data-request="<%= request._id %>" data-user="<%= user._id %>">Take Request</a>
+              <% const ref = request._id; %>
+              <a class="take-request-btn" data-request="<%= request._id %>" data-user="<%= user._id %>" id="<%= ref %>" onclick="takeRequest('<%= ref %>')">Take Request</a>
             <% } %>
           <% } %>
         <% }) %>
@@ -30,20 +31,21 @@
     </div>
 
   <%- include('../partials/request-footer'); -%>
+  <script>
+    function takeRequest(id) {
+      console.log(id);
+      const takeRequestBtn = document.getElementById(id);
+      console.log(takeRequestBtn);
+      const endpoint = `/favours/take-request/${takeRequestBtn.dataset.request}`;
+        fetch(endpoint, {
+          method: 'POST',
+          body: JSON.stringify({ takenBy: takeRequestBtn.dataset.user }),
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.log(err));
+    }
+  </script>
   </body>
 </html>
-
-<script>
-  const takeRequestBtn = document.querySelector('.take-request-btn');
-  takeRequestBtn.addEventListener('click', async (e) => {
-      const endpoint = `/favours/take-request/${takeRequestBtn.dataset.request}`;
-      fetch(endpoint, {
-        method: 'POST',
-        body: JSON.stringify({ takenBy: takeRequestBtn.dataset.user }),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(response => response.json())
-      .then(data => window.location.herf = data.redirect)
-      .catch(err => console.log(err));
-  });
-</script>
