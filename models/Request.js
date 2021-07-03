@@ -19,6 +19,9 @@ const requestSchema = new mongoose.Schema({
     remark: {
         type: String,
     },
+    status: {
+        type: String,
+    }
 }, { timestamps: true });
 
 const Request = mongoose.model('request', requestSchema);

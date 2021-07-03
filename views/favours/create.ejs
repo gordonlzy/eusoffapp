@@ -14,7 +14,8 @@
     <label for="remark">Request remark:</label>
     <textarea id="remark" name="remark"></textarea>
     <div class="remark error"></div>
-    <input type="hidden" name="owner" value= <%= user._id %> />
+    <input type="hidden" name="owner" value=<%= user._id %> />
+    <input type="hidden" name="status" value="Available" />
     <button>Submit</button>
   </form>
 
