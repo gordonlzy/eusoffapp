@@ -3,7 +3,6 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 module.exports.request_index = (req, res) => {
-    console.log("here");
     Request.find().sort({ createdAt: -1 })
         .then(async (result) => {
             const requests = result.map(async (request) => {
@@ -61,12 +60,11 @@ module.exports.request_delete = (req, res) => {
         .catch(err => console.log(err));
 }
 
-// update the person assigned to the request
-// module.exports.request_take_post = (req, res) => {
-//     const id = req.params.id;
-//     Request.findByIdAndUpdate(id)
-//         .then(result => {
-//             res.redirect("/favours/requests");
-//         })
-//         .catch(err => console.log(err));
-// }
+module.exports.request_edit_post = (req, res) => {
+    const id = req.params.id;
+    Request.findByIdAndUpdate(id, req.body)
+        .then(result => {
+            res.redirect("/favours");
+        })
+        .catch(err => console.log(err));
+}
