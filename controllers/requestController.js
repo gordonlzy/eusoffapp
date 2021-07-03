@@ -1,6 +1,5 @@
 const Request = require('../models/Request');
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
 
 module.exports.request_index = (req, res) => {
     Request.find().sort({ createdAt: -1 })
@@ -79,6 +78,16 @@ module.exports.request_takeRequest_post = (req, res) => {
     Request.findByIdAndUpdate(id, {status: "Taken", takenBy})
         .then(result => {
             res.json({ redirect: "/favours" });
+        })
+        .catch(err => console.log(err));
+};
+
+module.exports.request_remove_post = (req, res) => {
+    const { userID } = req.body;
+    const id = req.params.id;
+    Request.findByIdAndUpdate(id, {status: "Available", takenBy: undefined})
+        .then(result => {
+            res.json({ redirect: `/profile/${userID}` });
         })
         .catch(err => console.log(err));
 };
