@@ -8,19 +8,40 @@
   
       <% if (requests.length > 0) { %>
         <% requests.forEach(request => { %>
-          <br>
-          <a class="single" href="/favours/<%= request._id %>">
-            <h3 class="category"><%= request.category %> - <%= request.credit %> credit(s)</h3>
-            <p class="remark"><%= request.remark %></p>
-            <p>made by <a href="/profile/<%= request.owner %>" style="text-decoration: underline;"><%= request.ownerName %></a></p>
-          </a>
+          <% if (request.status == "Available") { %>
+            <br>
+            <a class="single" href="/favours/<%= request._id %>">
+              <h3 class="category"><%= request.category %> - <%= request.credit %> credit(s)</h3>
+              <p class="remark"><%= request.remark %></p>
+              <p>made by <a href="/profile/<%= request.owner %>" style="text-decoration: underline;"><%= request.ownerName %></a></p>
+            </a>
+            <% if (user.id == request.owner) { %>
+              <a class="view-btn" href="/favours/<%= request._id %>">View</a>
+            <% } else { %>
+              <a class="take-request-btn" data-doc="<%= request._id %>">Take Request</a>
+            <% } %>
+          <% } %>
         <% }) %>
       <% } else { %>
         <p>There are no active requests to display...</p>
       <% } %>
-      <a href="favours/create" class="btn" style="padding: 10px; position:relative; top: 50px;">Create</a>
+      <br>
+      <a href="favours/create" class="create-btn">Create</a>
     </div>
 
   <%- include('../partials/request-footer'); -%>
   </body>
 </html>
+
+<script>
+  const takeRequestBtn = document.querySelector('.take-request-btn');
+  takeRequestBtn.addEventListener('click', async (e) => {
+      const endpoint = `/favours/take-request/${takeRequestBtn.dataset.doc}`;
+      fetch(endpoint, {
+        method: 'POST',
+      })
+      .then(response => response.json())
+      .then(data => window.location.herf = data.redirect)
+      .catch(err => console.log(err));
+  });
+</script>
