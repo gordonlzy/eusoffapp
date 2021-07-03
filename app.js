@@ -5,6 +5,7 @@ const requestRoutes = require('./routes/requestRoutes');
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 const User = require('./models/User');
+const Request = require('./models/Request');
 
 const app = express();
 
@@ -31,8 +32,31 @@ app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
 app.get("/profile/:id", requireAuth, (req, res) => {
     const id = req.params.id;
     User.findById(id)
-        .then(result => {
-            res.render('profile', { viewedUser: result, title: "User profile" });
+        .then(async result => {
+            const requests = await Request.find({ owner: result._id });
+            const getTakerName = await Promise.all(requests.map(async request => {
+                const takerName = await User.findById(request.takenBy)
+                    .then(taker => {
+                        if (taker !== null) {
+                            return taker.name;
+                        }
+                    })
+                    .catch(err => console.log(err))
+                request.takerName = await takerName;
+                return request;
+            }));
+
+            const requestsTaken = await Request.find({ takenBy: result._id });
+            const getOwnerName = await Promise.all(requestsTaken.map(async request => {
+                const ownerName = await User.findById(request.owner)
+                    .then(owner => {
+                        return owner.name;
+                    })
+                    .catch(err => console.log(err))
+                request.ownerName = await ownerName;
+                return request;
+            }));
+            res.render('profile', { viewedUser: result, requests: getTakerName, requestsTaken: getOwnerName, title: "User profile" });
         })
         .catch(err => {
             console.log(err);

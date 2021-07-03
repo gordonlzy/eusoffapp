@@ -30,5 +30,81 @@
         <button>Edit</button>
     </form>
 <% } %>
+<% if (user._id == viewedUser.id) { %>
+    <div class="requests content">
+        <br>
+        <h2>My Requests</h2>
+        <% if (requests.length > 0) { %>
+        <% requests.forEach(request => { %>
+            <br>
+            <a class="single" href="/favours/<%= request._id %>">
+            <h3 class="category"><%= request.category %> - <%= request.credit %> credit(s)</h3>
+            <p class="remark"><%= request.remark %></p>
+            <p>Status: <%= request.status %></p>
+            <% if (request.takenBy == null) { %>
+                <p>Your request is not taken yet</p>
+            <% } else { %>
+                <p>taken by <a href="/profile/<%= request.takenBy %>" style="text-decoration: underline;"><%= request.takerName %></a></p>
+                <a class="cancel-btn">Cancel</a>
+            <% } %>
+            </a>
+        <% }) %>
+        <% } else { %>
+            <br>
+            <p>You have not created any requests</p>
+            <br>
+            <a href="../favours/create" class="create-btn">Create one now</a>
+        <% } %>
+    </div>
+    <div class="requests content">
+        <br>
+        <h2>Requests I have taken</h2>
+        <% if (requestsTaken.length > 0) { %>
+            <% requestsTaken.forEach(requestTaken => { %>
+                <br>
+                <a class="single" href="/favours/<%= requestTaken._id %>">
+                    <h3 class="category"><%= requestTaken.category %> - <%= requestTaken.credit %> credit(s)</h3>
+                    <p class="remark"><%= requestTaken.remark %></p>
+                    <p>Status: <%= requestTaken.status %></p>
+                    <p>Owner: <a href="/profile/<%= requestTaken.owner %>" style="text-decoration: underline;"><%= requestTaken.ownerName %></a></p>
+                    <a class="cancel-btn">Cancel</a>
+                </a>
+            <% }) %>
+        <% } else { %>
+            <br>
+            <p>You have not taken any requests</p>
+            <br>
+            <a href="../favours" class="create-btn">View Requests</a>
+        <% } %>
+    </div>
+  <% } else { %>
+    <div class="requests content">
+        <br>
+        <h2><%= viewedUser.name %>'s requests taken by you</h2>
+        <% if (requests.length > 0) { %>
+            <% let taken = false; %>
+            <% requests.forEach(request => { %>
+                <% if (request.takenBy == user.id) { %>
+                    <% taken = true; %>
+                    <br>
+                    <a class="single" href="/favours/<%= request._id %>">
+                        <h3 class="category"><%= request.category %> - <%= request.credit %> credit(s)</h3>
+                        <p class="remark"><%= request.remark %></p>
+                        <p>Status: <%= request.status %></p>
+                    </a>
+                <% } %>
+            <% }) %>
+            <% if (!taken) { %>
+                <br>
+                <p>You have not taken any requests made by <%= viewedUser.name %></p>
+            <% } %>
+        <% } else { %>
+            <br>
+            <p>You have not taken any requests made by <%= viewedUser.name %></p>
+            <br>
+            <a href="../favours/create" class="create-btn">Create one now</a>
+        <% } %>
+    </div>
+  <% } %>
 
 <%- include("partials/footer") -%>
