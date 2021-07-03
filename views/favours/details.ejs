@@ -7,6 +7,12 @@
         <div class="content">
             <p><%= request.remark %></p>
             <p>made by <%= request.ownerName %></p>
+            <% if (request.takenBy == null) { %>
+                <p>Your request is not taken yet</p>
+            <% } else { %>
+                <p>taken by <a href="/favours/profile/<%= request.takenBy %>" style="text-decoration: underline;"><%= request.takerName %></a></p>
+            <% } %>
+            
         </div>
         <% if (user.id == request.owner) { %>
             <a class="edit" data-doc="<%= request._id %>">
@@ -30,7 +36,7 @@
             <label for="remark">Request remark:</label>
             <textarea id="remark" name="remark"><%= request.remark %></textarea>
             <div class="remark error"></div>
-            <button>Submit</button>
+            <button>Edit</button>
         </form>
     <% } %>
 
@@ -51,13 +57,13 @@
 
         const trashcan = document.querySelector('a.delete');
         trashcan.addEventListener('click', (e) => {
-        const endpoint = `/favours/${trashcan.dataset.doc}`;
-        fetch(endpoint, {
-            method: 'DELETE',
-        })
-        .then(response => response.json())
-        .then(data => window.location.href = data.redirect)
-        .catch(err => console.log(err));
+            const endpoint = `/favours/${trashcan.dataset.doc}`;
+            fetch(endpoint, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => window.location.href = data.redirect)
+            .catch(err => console.log(err));
         });
         
     </script>

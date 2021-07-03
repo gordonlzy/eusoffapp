@@ -38,9 +38,13 @@ module.exports.request_details = (req, res) => {
     Request.findById(id)
         .then(async result => {
             const owner = await User.findById(result.owner);
-            const resultWithOwner = result;
-            resultWithOwner.ownerName = owner.name;
-            return resultWithOwner;
+            const takenBy = await User.findById(result.takenBy);
+            const resultWithOwnerTaker = result;
+            resultWithOwnerTaker.ownerName = owner.name;
+            if (takenBy !== null) {
+                resultWithOwnerTaker.takerName = takenBy.name;
+            }
+            return resultWithOwnerTaker;
         })
         .then(result => {
             res.render('favours/details', { request: result, title: "Request details" });
