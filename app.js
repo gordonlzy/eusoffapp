@@ -30,10 +30,20 @@ app.get('/meal', requireAuth, (req, res) => res.render('meal'));
 app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
 app.get("/profile/:id", requireAuth, (req, res) => {
     const id = req.params.id;
-    console.log(req);
     User.findById(id)
         .then(result => {
             res.render('profile', { viewedUser: result, title: "User profile" });
+        })
+        .catch(err => {
+            console.log(err);
+            res.render("404", { title: "User not found" });
+        })
+});
+app.post("/profile/:id", requireAuth, (req, res) => {
+    const id = req.params.id;
+    User.findByIdAndUpdate(id, req.body)
+        .then(result => {
+            res.redirect(`/profile/${id}`);
         })
         .catch(err => {
             console.log(err);
