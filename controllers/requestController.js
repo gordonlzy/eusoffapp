@@ -68,3 +68,12 @@ module.exports.request_edit_post = (req, res) => {
         })
         .catch(err => console.log(err));
 }
+
+module.exports.request_takeRequest_post = (req, res) => {
+    const id = req.params.id;
+    Request.findByIdAndUpdate(id, {status: "Taken"})
+        .then(result => {
+            res.json({ redirect: "/favours" });
+        })
+        .catch(err => console.log(err));
+};
