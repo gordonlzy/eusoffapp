@@ -45,7 +45,7 @@
                 <p>Your request is not taken yet</p>
             <% } else { %>
                 <p>taken by <a href="/profile/<%= request.takenBy %>" style="text-decoration: underline;"><%= request.takerName %></a></p>
-                <a class="cancel-btn">Cancel</a>
+                <a class="remove-btn" id="<%= request._id %>" onclick="remove('<%= request._id %>')" data-request="<%= request._id %>" data-user="<%= user._id %>">Remove Taker</a>
             <% } %>
             </a>
         <% }) %>
@@ -67,7 +67,7 @@
                     <p class="remark"><%= requestTaken.remark %></p>
                     <p>Status: <%= requestTaken.status %></p>
                     <p>Owner: <a href="/profile/<%= requestTaken.owner %>" style="text-decoration: underline;"><%= requestTaken.ownerName %></a></p>
-                    <a class="cancel-btn">Cancel</a>
+                    <a class="remove-btn" id="<%= requestTaken._id %>" onclick="remove('<%= requestTaken._id %>')" data-request="<%= requestTaken._id %>" data-user="<%= user._id %>">Withdraw</a>
                 </a>
             <% }) %>
         <% } else { %>
@@ -107,4 +107,20 @@
     </div>
   <% } %>
 
+<script>
+    function remove(id) {
+        const remove = document.getElementById(id);
+        const endpoint = `/favours/remove/${remove.dataset.request}`;
+        fetch(endpoint, {
+          method: 'POST',
+          body: JSON.stringify({ userID: remove.dataset.user }),
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.log(err));
+    }
+</script>
+
 <%- include("partials/footer") -%>
+

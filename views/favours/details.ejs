@@ -11,6 +11,9 @@
                 <p>Your request is not taken yet</p>
             <% } else { %>
                 <p>taken by <a href="/favours/profile/<%= request.takenBy %>" style="text-decoration: underline;"><%= request.takerName %></a></p>
+                <% if (user.id == request.owner) { %>
+                    <a class="remove-btn" id="<%= request._id %>" onclick="remove('<%= request._id %>')" data-request="<%= request._id %>" data-user="<%= user._id %>">Remove Taker</a>
+                <% } %>
             <% } %>
             
         </div>
@@ -18,7 +21,7 @@
             <a class="edit" data-doc="<%= request._id %>">
                 EDIT
             </a>
-            <a class="delete" data-doc="<%= request._id %>">
+            <a class="delete" data-doc="<%= request._id %>" onclick="deleteRequest()">
                 DELETE
             </a>
         <% } %>
@@ -43,20 +46,21 @@
     <%- include("../partials/request-footer.ejs") %>
 
     <script>
-        //TODO
-        // const editor = document.querySelector('a.edit');
-        // editor.addEventListener('click', (e) => {
-        // const endpoint = `/favours/${editor.dataset.doc}`;
-        // fetch(endpoint, {
-        //     method: 'DELETE',
-        // })
-        // .then(response => response.json())
-        // .then(data => window.location.href = data.redirect)
-        // .catch(err => console.log(err));
-        // });
+        function remove(id) {
+            const remove = document.getElementById(id);
+            const endpoint = `/favours/remove/${remove.dataset.request}`;
+            fetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify({ userID: remove.dataset.user }),
+            headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => window.location.href = data.redirect)
+            .catch(err => console.log(err));
+        }
 
-        const trashcan = document.querySelector('a.delete');
-        trashcan.addEventListener('click', (e) => {
+        function deleteRequest() {
+            const trashcan = document.querySelector('a.delete');
             const endpoint = `/favours/${trashcan.dataset.doc}`;
             fetch(endpoint, {
                 method: 'DELETE',
@@ -64,8 +68,7 @@
             .then(response => response.json())
             .then(data => window.location.href = data.redirect)
             .catch(err => console.log(err));
-        });
-        
+        }        
     </script>
     </body>
 </html>
