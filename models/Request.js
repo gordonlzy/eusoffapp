@@ -14,7 +14,7 @@ const requestSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
     },
     takenBy: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
     },
     remark: {
         type: String,
