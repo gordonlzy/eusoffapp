@@ -70,8 +70,9 @@ module.exports.request_edit_post = (req, res) => {
 }
 
 module.exports.request_takeRequest_post = (req, res) => {
+    const { takenBy } = req.body;
     const id = req.params.id;
-    Request.findByIdAndUpdate(id, {status: "Taken"})
+    Request.findByIdAndUpdate(id, {status: "Taken", takenBy})
         .then(result => {
             res.json({ redirect: "/favours" });
         })
