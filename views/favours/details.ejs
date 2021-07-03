@@ -3,18 +3,52 @@
     <body>
         <%- include("../partials/request-nav.ejs") -%>
         <div class="details content">
-            <h1><%= request.category %></h1>
+            <h1><%= request.category %> - <%= request.credit %> credit(s)</h1>
         <div class="content">
-            <p><%= request.remark %> made by <%= request.ownerName %> </p>
+            <p><%= request.remark %></p>
+            <p>made by <%= request.ownerName %></p>
         </div>
-        <a class="delete" data-doc="<%= request._id %>">
-        DELETE
-        </a>
+        <% if (user.id == request.owner) { %>
+            <a class="edit" data-doc="<%= request._id %>">
+                EDIT
+            </a>
+            <a class="delete" data-doc="<%= request._id %>">
+                DELETE
+            </a>
+        <% } %>
     </div>
+
+    <% if (user.id == request.owner) { %>
+        <form action="/favours/<%= request._id %>" method="POST">
+            <h2>Edit request</h2>
+            <label for="category">Request category:</label>
+            <input type="text" id="category" name="category" value="<%= request.category %>" required>
+            <div class="category error"></div>
+            <label for="credit">Request credit:</label>
+            <input type="text" id="credit" name="credit" value="<%= request.credit %>" required>
+            <div class="credit error"></div>
+            <label for="remark">Request remark:</label>
+            <textarea id="remark" name="remark"><%= request.remark %></textarea>
+            <div class="remark error"></div>
+            <button>Submit</button>
+        </form>
+    <% } %>
 
     <%- include("../partials/request-footer.ejs") %>
 
     <script>
+        //TODO
+        // const editor = document.querySelector('a.edit');
+        // editor.addEventListener('click', (e) => {
+        // const endpoint = `/favours/${editor.dataset.doc}`;
+        // fetch(endpoint, {
+        //     method: 'DELETE',
+        // })
+        // .then(response => response.json())
+        // .then(data => window.location.href = data.redirect)
+        // .catch(err => console.log(err));
+        // });
+
         const trashcan = document.querySelector('a.delete');
         trashcan.addEventListener('click', (e) => {
         const endpoint = `/favours/${trashcan.dataset.doc}`;
