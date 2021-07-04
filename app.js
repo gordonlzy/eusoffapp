@@ -19,9 +19,10 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 // database connection
+const PORT = process.env.PORT || 3000;
 const dbURI = "mongodb+srv://gordonlzy:gordomongo123@eusoffapp.h9b6z.mongodb.net/eusoffapp";
 mongoose.connect(dbURI, { useNewUrlParser: true, useCreateIndex: true })
-    .then((result) => app.listen(3000))
+    .then((result) => app.listen(PORT))
     .catch((err) => console.log(err));
 
 // routes
