@@ -11,8 +11,9 @@
                 <p>Your request is not taken yet</p>
             <% } else { %>
                 <p>taken by <a href="/favours/profile/<%= request.takenBy %>" style="text-decoration: underline;"><%= request.takerName %></a></p>
-                <% if (user.id == request.owner) { %>
-                    <a class="remove-btn" id="<%= request._id %>" onclick="remove('<%= request._id %>')" data-request="<%= request._id %>" data-user="<%= user._id %>">Remove Taker</a>
+                <% if (user.id == request.owner && request.status == "Taken") { %>
+                    <a class="remove-btn" id="r_<%= request._id %>" onclick="remove('r_<%= request._id %>')" data-request="<%= request._id %>" data-user="<%= user._id %>">Remove Taker</a>
+                    <a  class="remove-btn" id="c_<%= request._id %>" onclick="completeRequest('c_<%= request._id %>')" data-request="<%= request._id %>" data-user="<%= user._id %>" data-takenBy="<%= request.takenBy %>">Complete Request</a>
                 <% } %>
             <% } %>
             
@@ -68,7 +69,20 @@
             .then(response => response.json())
             .then(data => window.location.href = data.redirect)
             .catch(err => console.log(err));
-        }        
+        }    
+        
+        function completeRequest(id) {
+            const complete = document.getElementById(id);
+            const endpoint = `/favours/complete/${complete.dataset.request}`;
+            fetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify({ userID: complete.dataset.user, takenByID: complete.dataset.takenby }),
+            headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => window.location.href = data.redirect)
+            .catch(err => console.log(err));
+        }
     </script>
     </body>
 </html>
