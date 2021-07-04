@@ -1,6 +1,27 @@
 const Request = require('../models/Request');
 const User = require('../models/User');
 
+// handle error
+const handleErrors = (err, userCredit) => {
+    console.log(err.message, err.code);
+    let errors = { category: "", credit: "", remark: "" };
+
+    // insufficient credits
+    if (err.message === "insufficient credit") {
+        errors.credit = `not enough credits, you have ${userCredit} credits left`;
+    }
+
+    if (err.message === "zero credit") {
+        errors.credit = `don't be cheap, give some credits`;
+    }
+
+    if (err.message === "zero user credit") {
+        errors.credit = `you have no credits left, go do some good`;
+    }
+
+    return errors;
+};
+
 module.exports.request_index = (req, res) => {
     Request.find().sort({ createdAt: -1 })
         .then(async (result) => {
@@ -23,13 +44,35 @@ module.exports.request_create_get = (req, res) => {
     res.render('favours/create', { title: "Create a new request" });
 }
 
-module.exports.request_create_post = (req, res) => {
-    const request = new Request(req.body);
-    request.save()
-        .then(result => {
-            res.redirect("/favours");
-        })
-        .catch(err => console.log(err));
+module.exports.request_create_post = async (req, res) => {
+    const { category, credit, remark, owner, status, userID } = req.body;
+    const user = await User.findById(userID);
+    const userCredit = user.credit;
+    const newUserCredit = userCredit - credit;
+    try {
+        if (parseInt(credit) > parseInt(userCredit)) {
+            throw Error("insufficient credit");
+        } 
+        if (parseInt(credit) == 0) {
+            throw Error("zero credit");
+        } 
+        if (parseInt(userCredit) == 0) {
+            throw Error("zero user credit");
+        } 
+
+        const update = await User.findByIdAndUpdate(userID, { credit: newUserCredit })
+            .catch(err => console.log(err));
+        const request = new Request({ category, credit, remark, owner, status, pendingCredit: credit });
+        request.save()
+            .then(result => {
+                res.status(200).json({ user: user._id });
+            })
+            .catch(err => console.log(err));
+        }
+    catch (err) {
+        const errors = handleErrors(err, userCredit);
+        res.status(400).json({ errors });
+    }
 }
 
 module.exports.request_details = (req, res) => {
@@ -75,7 +118,7 @@ module.exports.request_edit_post = (req, res) => {
 module.exports.request_takeRequest_post = (req, res) => {
     const { takenBy } = req.body;
     const id = req.params.id;
-    Request.findByIdAndUpdate(id, {status: "Taken", takenBy})
+    Request.findByIdAndUpdate(id, { status: "Taken", takenBy })
         .then(result => {
             res.json({ redirect: "/favours" });
         })
@@ -85,9 +128,36 @@ module.exports.request_takeRequest_post = (req, res) => {
 module.exports.request_remove_post = (req, res) => {
     const { userID } = req.body;
     const id = req.params.id;
-    Request.findByIdAndUpdate(id, {status: "Available", takenBy: undefined})
+    Request.findByIdAndUpdate(id, { status: "Available", takenBy: undefined })
         .then(result => {
             res.json({ redirect: `/profile/${userID}` });
         })
         .catch(err => console.log(err));
 };
+
+module.exports.request_complete_post = async (req, res) => {
+    const { userID, takenByID } = req.body;
+    const id = req.params.id;
+    const pendingCreditTransfer = await Request.findById(id)
+        .then(result => {
+            return result.pendingCredit;
+        })
+        .catch(err => console.log(err));
+    console.log("takenByID", takenByID);
+    const credit = await User.findOne({ _id: takenByID })
+        .then(result => {
+            return result.credit;
+        })
+        .catch(err => console.log(err));
+    console.log("credit", credit);
+    console.log("pendingCreditTransfer", pendingCreditTransfer);
+    const newUserCredit = credit + pendingCreditTransfer;
+    console.log("newUserCredit", newUserCredit);
+    const update = await User.findOneAndUpdate({ _id: takenByID }, { credit: newUserCredit })
+        .catch(err => console.log(err));
+    Request.findByIdAndUpdate(id, { status: "Completed", pendingCredit: 0 })
+        .then(result => {
+            res.json({ redirect: `/profile/${userID}` });
+        })
+        .catch(err => console.log(err));
+}
