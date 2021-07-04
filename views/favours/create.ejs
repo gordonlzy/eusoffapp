@@ -3,13 +3,13 @@
 
 <body>
   <%- include("../partials/request-nav.ejs") %>
-  <form action="/favours" method="POST">
+  <form data-user="<%= user._id %>">
     <h2>Create a new request</h2>
     <label for="category">Request category:</label>
     <input type="text" id="category" name="category" required>
     <div class="category error"></div>
     <label for="credit">Request credit:</label>
-    <input type="text" id="credit" name="credit" required>
+    <input type="number" id="credit" name="credit" required>
     <div class="credit error"></div>
     <label for="remark">Request remark:</label>
     <textarea id="remark" name="remark"></textarea>
@@ -20,5 +20,51 @@
   </form>
 
   <%- include("../partials/request-footer.ejs") -%>
+
+    <script>
+        const form = document.querySelector('form');
+        const categoryError = document.querySelector('.category.error');
+        const creditError = document.querySelector('.credit.error');
+        const remarkError = document.querySelector('.remark.error');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // reset errors
+            categoryError.textContent = "";
+            creditError.textContent = "";
+            remarkError.textContent = "";
+
+            // get the values
+            const category = form.category.value;
+            const credit = form.credit.value;
+            const remark = form.remark.value;
+            const userID = form.dataset.user;
+            const owner = form.owner.value;
+            const status = form.status.value;
+
+            try {
+                const res = await fetch('/favours', {
+                    method: 'POST',
+                    body:  JSON.stringify({ category, credit, remark, owner, status, userID }),
+                    headers: { "Content-Type": "application/json" }
+                });
+                const data = await res.json();
+                console.log(data);
+                if (data.errors) {
+                    categoryError.textContent = data.errors.category;
+                    creditError.textContent = data.errors.credit;
+                    remarkError.textContent = data.errors.remark;
+                }
+                if (data.user) {
+                    location.assign("/favours");
+                }
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    </script>
+
 </body>
 </html>
