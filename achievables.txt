@@ -1,0 +1,31 @@
+Eusoff App
+1. add validation for user sign up for room field
+2. add side menu bar for easy navigation
+
+
+Eusoff Favours
+Phase 1 (Backend)
+1. leaderboard / challenge mechanism
+
+Phase 2 (Frontend)
+1. start developing using react
+
+Phase 3 (Mobile)
+1. develop frontend using react native
+
+Eusoff Mealbot
+1. write a script to change the excel file to json object
+2. upload to mongoDB
+3. create new MVC for meal
+4. display the data
+
+
+Eusoff Laundrybot
+1. connect to spreadsheet(or find a better way to store data)
+
+
+Eusoff FAQ
+1. compile a list of faqs
+2. store in mongoDB
+3. add a search bar with auto complete
+4. have a view file to display to content
