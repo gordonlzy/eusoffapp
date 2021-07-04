@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const User = require('./User');
 
 const requestSchema = new mongoose.Schema({
     category: {
@@ -7,7 +6,7 @@ const requestSchema = new mongoose.Schema({
         required: [true, "Please enter a category"]
     },
     credit: {
-        type: String,
+        type: Number,
         required: [true, "Please enter the number of credits"]
     },
     owner: {
@@ -21,6 +20,9 @@ const requestSchema = new mongoose.Schema({
     },
     status: {
         type: String,
+    },
+    pendingCredit: {
+        type: Number,
     }
 }, { timestamps: true });
 
