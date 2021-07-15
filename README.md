@@ -35,6 +35,10 @@ $ git clone https://github.com/eusoff-hackers/eusoffapp.git
 ```sh
 $ cd eusoffapp
 ```
+> Once the setup is done, open http://localhost:3000/ in your browser and go to your terminal and enter
+```sh
+$ node app
+```
 # nodemon
 
 You are also encouraged to install nodemon to speed up your development. nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected.
