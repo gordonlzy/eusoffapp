@@ -9,14 +9,16 @@ const requireAuth = (req, res, next) => {
         jwt.verify(token, "eusoff app secret", (err, decodedToken) => {
             if (err) {
                 console.log(err.message);
-                res.redirect("/login");
+                // res.redirect("/login");
+                res.json({ jwt_result: "failed" })
             } else {
                 // console.log(decodedToken);
                 next();
             }
         });
     } else {
-        res.redirect("/login");
+        // res.redirect("/login");
+        res.json({ jwt_result: "failed" })
     }
 };
 
