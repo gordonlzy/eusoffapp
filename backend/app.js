@@ -6,10 +6,15 @@ const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 const User = require('./models/User');
 const Request = require('./models/Request');
+const cors = require("cors");
 
 const app = express();
 
 // middleware
+app.use(cors({ 
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -19,7 +24,7 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 // database connection
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const dbURI = "mongodb+srv://gordonlzy:gordomongo123@eusoffapp.h9b6z.mongodb.net/eusoffapp";
 mongoose.connect(dbURI, { useNewUrlParser: true, useCreateIndex: true })
     .then((result) => app.listen(PORT))
@@ -86,7 +91,8 @@ app.post("/profile/:id", requireAuth, (req, res) => {
 app.use(authRoutes);
 
 // requests routes
-app.use('/favours', requireAuth, requestRoutes);
+// app.use('/favours', requireAuth, requestRoutes);
+app.use('/favours', requestRoutes);
 
 // 404 page
 app.use((req, res) => {
