@@ -35,13 +35,15 @@ module.exports.request_index = (req, res) => {
                 return request;
             });
             const requestWithOwnerName = await Promise.all(requests);
-            res.render('favours/requests', { requests: requestWithOwnerName, title: "Eusoff Favours" });
+            // res.render('favours/requests', { requests: requestWithOwnerName, title: "Eusoff Favours" });
+            res.json({ requests: requestWithOwnerName, title: "Eusoff Favours" });
         })
         .catch((err) => console.log(err))
 }
 
 module.exports.request_create_get = (req, res) => {
-    res.render('favours/create', { title: "Create a new request" });
+    // res.render('favours/create', { title: "Create a new request" });
+    res.json({ title: "Create a new request" });
 }
 
 module.exports.request_create_post = async (req, res) => {
@@ -89,11 +91,13 @@ module.exports.request_details = (req, res) => {
             return resultWithOwnerTaker;
         })
         .then(result => {
-            res.render('favours/details', { request: result, title: "Request details" });
+            // res.render('favours/details', { request: result, title: "Request details" });
+            res.json({ request: result, title: "Request details" });
         })
         .catch(err => {
             console.log(err);
-            res.render("404", { title: "Request not found" });
+            // res.render("404", { title: "Request not found" });
+            res.json({ title: "Request not found" });
         })
 }
 

@@ -27,9 +27,12 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useCreateIndex: true })
 
 // routes
 app.get('*', checkUser);
-app.get('/', (req, res) => res.render('home'));
-app.get('/meal', requireAuth, (req, res) => res.render('meal'));
-app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
+// app.get('/', (req, res) => res.render('home'));
+app.get('/', (req, res) => res.json({ title: "Home" }));
+// app.get('/meal', requireAuth, (req, res) => res.render('meal'));
+app.get('/meal', requireAuth, (req, res) => res.json({ title: 'meal' }));
+// app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
+app.get('/laundry', requireAuth, (req, res) => res.json({ title: 'laundry' }));
 app.get("/profile/:id", requireAuth, (req, res) => {
     const id = req.params.id;
     User.findById(id)
@@ -57,11 +60,13 @@ app.get("/profile/:id", requireAuth, (req, res) => {
                 request.ownerName = await ownerName;
                 return request;
             }));
-            res.render('profile', { viewedUser: result, requests: getTakerName, requestsTaken: getOwnerName, title: "User profile" });
+            // res.render('profile', { viewedUser: result, requests: getTakerName, requestsTaken: getOwnerName, title: "User profile" });
+            res.json({ viewedUser: result, requests: getTakerName, requestsTaken: getOwnerName, title: "User profile" });
         })
         .catch(err => {
             console.log(err);
-            res.render("404", { title: "User not found" });
+            // res.render("404", { title: "User not found" });
+            res.json({ title: "User not found" });
         })
 });
 app.post("/profile/:id", requireAuth, (req, res) => {
@@ -72,7 +77,8 @@ app.post("/profile/:id", requireAuth, (req, res) => {
         })
         .catch(err => {
             console.log(err);
-            res.render("404", { title: "User not found" });
+            // res.render("404", { title: "User not found" });
+            res.json({ title: "User not found" });
         })
 });
 
@@ -84,5 +90,6 @@ app.use('/favours', requireAuth, requestRoutes);
 
 // 404 page
 app.use((req, res) => {
-    res.status(404).render("404", { title: "404" });
+    // res.status(404).render("404", { title: "404" });
+    res.status(404).json({ title: "404" });
 })
