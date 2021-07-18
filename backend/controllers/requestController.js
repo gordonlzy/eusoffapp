@@ -23,6 +23,7 @@ const handleErrors = (err, userCredit) => {
 };
 
 module.exports.request_index = (req, res) => {
+    console.log("requested");
     Request.find().sort({ createdAt: -1 })
         .then(async (result) => {
             const requests = result.map(async (request) => {
@@ -31,8 +32,9 @@ module.exports.request_index = (req, res) => {
                         return owner.name;
                     })
                     .catch(err => console.log(err));
-                request.ownerName = ownerName;
-                return request;
+                // request.ownerName = ownerName;
+                // return request;
+                return { ownerName: ownerName, ...request._doc };
             });
             const requestWithOwnerName = await Promise.all(requests);
             // res.render('favours/requests', { requests: requestWithOwnerName, title: "Eusoff Favours" });
