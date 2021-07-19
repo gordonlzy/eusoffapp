@@ -1,18 +1,20 @@
+import { Link } from "react-router-dom";
+
 const Home = () => {
     return (
         <header>
-            <div class="flex-gap">
+            <div className="flex-gap">
             <div>
                 <h4>Meal Bot</h4>
-                <a href="/meal" class="btn">Check Menu</a>
+                <Link to="/meal" className="btn">Check Menu</Link>
             </div>
             <div>
                 <h4>Laundry Bot</h4>
-                <a href="/laundry" class="btn">Check Laundry</a>
+                <Link to="/laundry" className="btn">Check Laundry</Link>
             </div>
             <div>
                 <h4>Eusoff Favours</h4>
-                <a href="/favours" class="btn">Check Favours</a>
+                <Link to="/favours" className="btn">Check Favours</Link>
             </div>
             </div>
         </header>
