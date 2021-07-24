@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const useFetch = (url) => {
   const [data, setData] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
+  const history = useHistory();
 
   useEffect(() => {
     const abortCont = new AbortController();
 
-    fetch(url, { signal: abortCont.signal, mode: "cors" })
+    fetch(url, { signal: abortCont.signal, mode: "cors", credentials: "include" })
       .then(res => {
         if (!res.ok) { // error coming back from server
           throw Error('could not fetch the data for that resource');
@@ -16,6 +18,9 @@ const useFetch = (url) => {
         return res.json();
       })
       .then(data => {
+        if (data.jwt_result === "failed") {
+          history.push('/login');
+        }
         setIsPending(false);
         setData(data);
         setError(null);
@@ -32,7 +37,7 @@ const useFetch = (url) => {
 
     // abort the fetch
     return () => abortCont.abort();
-  }, [url])
+  }, [url, history])
 
   return { data, isPending, error };
 }
