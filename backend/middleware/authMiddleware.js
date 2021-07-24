@@ -17,7 +17,6 @@ const requireAuth = (req, res, next) => {
             }
         });
     } else {
-        // res.redirect("/login");
         res.json({ jwt_result: "failed" })
     }
 };
@@ -29,13 +28,15 @@ const checkUser = (req, res, next) => {
     if (token) {
         jwt.verify(token, "eusoff app secret", async (err, decodedToken) => {
             if (err) {
-                console.log(err.message);
-                res.locals.user = null;
+                // console.log(err.message);
+                // res.locals.user = null;
+                req.verifiedUser = null;
                 next();
             } else {
                 // console.log(decodedToken);
                 let user = await User.findById(decodedToken.id);
-                res.locals.user = user;
+                // res.locals.user = user;
+                req.verifiedUser = user;
                 next();
             }
         });
