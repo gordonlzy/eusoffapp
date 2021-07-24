@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-const Create = () => {
+const Create = ({ user }) => {
     const [category, setCategory] = useState('');
     const [credit, setCredit] = useState(1);
     const [remark, setRemark] = useState('');
     const [categoryError, setCategoryError] = useState('');
     const [creditError, setCreditError] = useState('');
     const [remarkError, setRemarkError] = useState('');
-    // const [owner, setOwner] = useState(user._id);
+    const [owner, setOwner] = useState(user._id);
     const [status, setStatus] = useState("Available");
     const history = useHistory();
 
@@ -16,10 +16,12 @@ const Create = () => {
         e.preventDefault();
 
         try {
-            const res = await fetch('http://localhost:8080/favours/create', {
+            const res = await fetch('http://localhost:8080/favours', {
                 method: 'POST',
-                body:  JSON.stringify({ category, credit, remark }),
-                headers: { "Content-Type": "application/json" }
+                body:  JSON.stringify({ category, credit, remark, owner, status, userID: user._id }),
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+                credentials: 'include'
             });
             const data = await res.json();
             if (data.errors) {
@@ -38,7 +40,7 @@ const Create = () => {
     }
 
     return (
-        <form data-user="<%= user._id %>">
+        <form onSubmit={handleSubmit}>
             <h2>Create a new request</h2>
             <label>Request category:</label>
             <input 
