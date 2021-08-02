@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ stateChanger }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -26,6 +26,7 @@ const Login = () => {
                 setPasswordError(data.errors.password);
             }
             if (data.token) {
+                stateChanger(true);
                 console.log("all good", data.token);
                 // localStorage.setItem("token", data.token);
                 history.push("/");
