@@ -12,7 +12,8 @@ const app = express();
 
 // middleware
 app.use(cors({ 
-    origin: 'http://localhost:3000',
+    // origin: 'http://localhost:3000',
+    origin: true,
     credentials: true,
 }));
 app.use(express.static("public"));
@@ -33,11 +34,11 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useCreateIndex: true })
 // routes
 app.get('*', checkUser);
 // app.get('/', (req, res) => res.render('home'));
-app.get('/', (req, res) => res.json({ title: "Home" }));
+app.get('/', (req, res) => res.json({ title: "Home", user: req.verifiedUser }));
 // app.get('/meal', requireAuth, (req, res) => res.render('meal'));
-app.get('/meal', requireAuth, (req, res) => res.json({ title: 'meal' }));
+app.get('/meal', requireAuth, (req, res) => res.json({ title: 'meal', user: req.verifiedUser }));
 // app.get('/laundry', requireAuth, (req, res) => res.render('laundry'));
-app.get('/laundry', requireAuth, (req, res) => res.json({ title: 'laundry' }));
+app.get('/laundry', requireAuth, (req, res) => res.json({ title: 'laundry', user: req.verifiedUser }));
 app.get("/profile/:id", requireAuth, (req, res) => {
     const id = req.params.id;
     User.findById(id)
@@ -51,8 +52,9 @@ app.get("/profile/:id", requireAuth, (req, res) => {
                         }
                     })
                     .catch(err => console.log(err))
-                request.takerName = await takerName;
-                return request;
+                // request.takerName = await takerName;
+                // return request;
+                return { takerName: takerName, ...request._doc };
             }));
 
             const requestsTaken = await Request.find({ takenBy: result._id });
@@ -62,8 +64,9 @@ app.get("/profile/:id", requireAuth, (req, res) => {
                         return owner.name;
                     })
                     .catch(err => console.log(err))
-                request.ownerName = await ownerName;
-                return request;
+                // request.ownerName = await ownerName;
+                // return request;
+                return { ownerName: ownerName, ...request._doc };
             }));
             // res.render('profile', { viewedUser: result, requests: getTakerName, requestsTaken: getOwnerName, title: "User profile" });
             res.json({ viewedUser: result, requests: getTakerName, requestsTaken: getOwnerName, title: "User profile" });
@@ -91,8 +94,8 @@ app.post("/profile/:id", requireAuth, (req, res) => {
 app.use(authRoutes);
 
 // requests routes
-// app.use('/favours', requireAuth, requestRoutes);
-app.use('/favours', requestRoutes);
+app.use('/favours', requireAuth, requestRoutes);
+// app.use('/favours', requestRoutes);
 
 // 404 page
 app.use((req, res) => {
