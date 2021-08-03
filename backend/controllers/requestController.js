@@ -23,7 +23,6 @@ const handleErrors = (err, userCredit) => {
 };
 
 module.exports.request_index = (req, res) => {
-    console.log("requested");
     Request.find().sort({ createdAt: -1 })
         .then(async (result) => {
             const requests = result.map(async (request) => {
@@ -38,14 +37,14 @@ module.exports.request_index = (req, res) => {
             });
             const requestWithOwnerName = await Promise.all(requests);
             // res.render('favours/requests', { requests: requestWithOwnerName, title: "Eusoff Favours" });
-            res.json({ requests: requestWithOwnerName, title: "Eusoff Favours" });
+            res.json({ requests: requestWithOwnerName, title: "Eusoff Favours", user: req.verifiedUser });
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.log(err));
 }
 
 module.exports.request_create_get = (req, res) => {
     // res.render('favours/create', { title: "Create a new request" });
-    res.json({ title: "Create a new request" });
+    res.json({ title: "Create a new request", user: req.verifiedUser });
 }
 
 module.exports.request_create_post = async (req, res) => {
@@ -85,12 +84,14 @@ module.exports.request_details = (req, res) => {
         .then(async result => {
             const owner = await User.findById(result.owner);
             const takenBy = await User.findById(result.takenBy);
-            const resultWithOwnerTaker = result;
-            resultWithOwnerTaker.ownerName = owner.name;
+            // const resultWithOwnerTaker = result;
+            // resultWithOwnerTaker.ownerName = owner.name;
             if (takenBy !== null) {
-                resultWithOwnerTaker.takerName = takenBy.name;
+                // resultWithOwnerTaker.takerName = takenBy.name;
+                return { takerName: takenBy.name, ownerName: owner.name, ...result._doc };
             }
-            return resultWithOwnerTaker;
+            return { ownerName: owner.name, ...result._doc };
+            // return resultWithOwnerTaker;
         })
         .then(result => {
             // res.render('favours/details', { request: result, title: "Request details" });
@@ -113,9 +114,11 @@ module.exports.request_delete = (req, res) => {
 }
 
 module.exports.request_edit_post = (req, res) => {
+    console.log(req.body);
     const id = req.params.id;
     Request.findByIdAndUpdate(id, req.body)
         .then(result => {
+            console.log("edited correctly");
             res.redirect("/favours");
         })
         .catch(err => console.log(err));
