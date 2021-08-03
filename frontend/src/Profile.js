@@ -1,11 +1,75 @@
 import { useHistory, useParams } from "react-router-dom";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import useFetch from "./useFetch";
 
 const Profile = ({ user }) => {
+    
     const { id } = useParams();
-    const { data } = useFetch('http://localhost:8080/profile/' + id);
-    console.log(data);
+    const history = useHistory();
+
+    const [editName, setEditName] = useState("");
+
+    const [backupName, setBackupName] = useState("");
+
+    const setData = (data) => {
+        setEditName(data.viewedUser.name);
+
+        setBackupName(data.viewedUser.name);
+    }
+
+    const { data } = useFetch('http://localhost:8080/profile/' + id, setData);
+
+    const saveEdit = (e) => {
+        e.preventDefault();
+
+        const editUser = { name:editName };
+
+        fetch("http://localhost:8080/profile/" + id, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(editUser),
+            withCredentials: true,
+            credentials: 'include'
+        }).then(() => {
+            setBackupName(editName);
+            console.log("edited successfully");
+        })
+    }
+
+    const cancelEdit = () => {
+        setEditName(backupName);
+    }
+
+    const remove = (id) => {
+        const remove = document.getElementById(id);
+        const endpoint = `http://localhost:8080/favours/remove/${remove.dataset.request}`;
+        fetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify({ userID: remove.dataset.user }),
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.log(err));
+    }
+
+    const completeRequest = (id) => {
+        const complete = document.getElementById(id);
+        const endpoint = `http://localhost:8080/favours/complete/${complete.dataset.request}`;
+        fetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify({ userID: complete.dataset.user, takenByID: complete.dataset.takenby }),
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.log(err));
+    }
 
     return (
         <div>
@@ -13,18 +77,39 @@ const Profile = ({ user }) => {
                 <div>
                     { user._id === id &&
                         <div>
-                            <h2>Welcome back, { data.viewedUser.name }</h2>
+                            <h2>Welcome back, { editName }</h2>
                         </div>
                     }
                     { user._id !== id &&
                         <div>
-                            <h2>You are viewing { data.viewedUser.name }'s Profile</h2>
+                            <h2>You are viewing { editName }'s Profile</h2>
                         </div>
                     }
 
                     <div className="data">
                         <br />
-                        <p>Name: { data.viewedUser.name }</p>
+                        <div className="edit-content">
+                            { user._id === id && (
+                                <div className="edit-content">
+                                    <p>Name: </p>
+                                    <input
+                                        value={editName}
+                                        className="editable"
+                                        onChange={(e) => setEditName(e.target.value)}
+                                    />
+                                </div>
+                            )}
+                            { user._id !== id && (
+                                <p>Name: { editName }</p>
+                            )}
+                            {
+                                editName !== backupName && 
+                                <div className="inner-edit-content">
+                                    <p className="save-changes" onClick={saveEdit}>Save</p>
+                                    <p className="cancel-changes" onClick={cancelEdit}>Cancel</p>
+                                </div>
+                            }
+                        </div>
                         <p>Room: { data.viewedUser.room }</p>
                         <p>Email: { data.viewedUser.email }</p>
                         <p>Credit: { data.viewedUser.credit }</p>
@@ -45,10 +130,12 @@ const Profile = ({ user }) => {
                                             { request.takenBy && 
                                                 <div>
                                                     <p>taken by <Link to={`/profile/${request.takenBy}`}>{ request.takerName }</Link></p>
-                                                    {/* { request.status === "Taken" && (
-                                                        <a className="remove-btn" id="r_<%= request._id %>" onclick="remove('r_<%= request._id %>')" data-request={`${request._id}`} data-user={`${user._id}`}>Remove Taker</a>
-                                                        <a  className="remove-btn" id="c_<%= request._id %>" onclick="completeRequest('c_<%= request._id %>')" data-request={`${request._id}`} data-user={`${user._id}`}data-takenBy="<%= request.takenBy %>">Complete Request</a>
-                                                    )} */}
+                                                    { request.status === "Taken" && (
+                                                        <div>
+                                                            <a className="remove-btn" id={`r_${ request._id }`} onClick={() => remove(`r_${ request._id }`)} data-request={`${request._id}`} data-user={`${user._id}`}>Remove Taker</a>
+                                                            <a className="remove-btn" id={`c_${ request._id }`} onClick={() => completeRequest(`c_${ request._id }`)} data-request={`${request._id}`} data-user={`${user._id}`}data-takenby={`${request.takenBy}`}>Complete Request</a>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             }
                                             { !request.takenBy && 
@@ -80,7 +167,7 @@ const Profile = ({ user }) => {
                                             <p className="remark">{ requestTaken.remark }</p>
                                             <p>Status: { requestTaken.status }</p>
                                             <p>Owner: <a href="/profile/<%= requestTaken.owner %>">{ requestTaken.ownerName }</a></p>
-                                            {/* <a className="remove-btn" id="<%= requestTaken._id %>" onclick="remove('<%= requestTaken._id %>')" data-request="<%= requestTaken._id %>" data-user="<%= user._id %>">Withdraw</a> */}
+                                            <a className="remove-btn" id={`${ requestTaken._id }`} onClick={() => remove(`${ requestTaken._id }`)} data-request={`${ requestTaken._id }`} data-user={`${ user._id }`}>Withdraw</a>
                                         </a>
                                     </div>
                                 ))}
