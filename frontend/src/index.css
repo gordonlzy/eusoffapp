@@ -140,6 +140,7 @@ footer{
   position:relative; 
   left: 350px; 
   bottom: 50px;
+  margin-left: 2em;
 }
 .view-btn:hover {
   cursor: pointer;
@@ -151,6 +152,7 @@ footer{
   position:relative; 
   left: 350px; 
   bottom: 50px;
+  margin-left: 2em;
 }
 .take-request-btn:hover {
   cursor: pointer;
@@ -169,4 +171,48 @@ footer{
   position:relative; 
   left: 350px; 
   bottom: 50px;
+}
+.delete-btn {
+  border-radius: 36px;
+  background: #FEE996;
+  padding: 10px; 
+  position:relative; 
+  left: 700px; 
+  bottom: 50px;
+}
+.editable {
+  background-color: transparent;
+  border: solid 2px transparent;
+  width: 35%;
+}
+.editable:hover {
+  border: solid 2px #EBE9ED;
+}
+.edit-content {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+.inner-edit-content {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+.save-changes {
+  margin-left: 2em;
+  border-radius: 36px;
+  background: #FEE996;
+  padding: 10px; 
+}
+.save-changes:hover {
+  cursor: pointer;
+}
+.cancel-changes {
+  margin-left: 2em;
+  border-radius: 36px;
+  background: #FEE996;
+  padding: 10px; 
+}
+.cancel-changes:hover {
+  cursor: pointer;
 }
