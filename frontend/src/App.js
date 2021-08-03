@@ -14,14 +14,15 @@ import useFetch from "./useFetch";
 import { useState } from 'react';
 
 function App() {
+  const [isUser, setIsUser] = useState(false);
   const res = useFetch('http://localhost:8080/');
   const data = res.data;
-  const [isUser, setIsUser] = useState(false);
 
   return (
     <Router>
       <div className="App">
-        { data && <Navbar user={data.user} login={isUser} stateChanger={setIsUser}/> }
+        { data && data.user && <Navbar user={data.user} login={isUser} stateChanger={setIsUser}/> }
+        {/* { data && data.user && <Navbar user={user} login={isUser} stateChanger={setIsUser}/> } */}
         <div className="content">
           <Switch>
             <Route exact path="/">
@@ -31,10 +32,10 @@ function App() {
               <Login stateChanger={setIsUser}/>
             </Route>
             <Route path="/signup">
-              <SignUp />
+              <SignUp stateChanger={setIsUser}/>
             </Route>
             <Route exact path="/favours">
-              <Favours />
+              { data && <Favours user={data.user}/> }
             </Route>
             <Route path="/meal">
               <Meal />
