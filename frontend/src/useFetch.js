@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-const useFetch = (url) => {
+const useFetch = (url, setExtData) => {
   const [data, setData] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
@@ -9,7 +9,6 @@ const useFetch = (url) => {
 
   useEffect(() => {
     const abortCont = new AbortController();
-
     fetch(url, { signal: abortCont.signal, mode: "cors", credentials: "include" })
       .then(res => {
         if (!res.ok) { // error coming back from server
@@ -23,6 +22,7 @@ const useFetch = (url) => {
         }
         setIsPending(false);
         setData(data);
+        !!setExtData && setExtData(data);
         setError(null);
       })
       .catch(err => {
